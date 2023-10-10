@@ -46,7 +46,7 @@
         <section class="wrapper product" style="width: 100%; margin: 0 16px; justify-content: start">
             <h3 class="section-name" style="text-align: left; color: black; margin-bottom: 12px; margin-left: 8px">Roommate ratings</h3>
             {% for roommate in roommates %}
-                <div>
+                <a href="{% url 'main:roommate' roommate.id %}" style="text-decoration: none; color: inherit">
                     <div class="search-main-div2">
                         <i class="fas fa-arrow-right"></i>
                
@@ -63,7 +63,7 @@
                                 <h3 class="mb-0 ms-1">
                                     {{roommate.name}}
                                 </h3>
-                                <div class="mb-2 ms-1">Total attribute ratings: {{roommate.get_total_rating}}</div>
+                                <div class="mb-3 ms-1">Total attribute ratings: {{roommate.get_total_rating}}</div>
                                 {% for r in roommate.get_top_two_ratings %}
                                 <div class="div2-maindiv">
                                     <p class="fw-bold mb-0" style="width: 150px">
@@ -90,14 +90,14 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             {% endfor %}
         </section>
 
         <section class="wrapper product" style="width: 100%; margin: 0 16px; justify-content: start">
             <h3 class="section-name" style="text-align: left; color: black; margin-bottom: 12px; margin-left: 8px">Address ratings</h3>
             {% for roommate in addresses %}
-                <div>
+            <a href="{% url 'main:address' roommate.id %}" style="text-decoration: none; color: inherit">
                     <div class="search-main-div2">
                         <i class="fas fa-arrow-right"></i>
                
@@ -112,9 +112,9 @@
                             </div>
                             <div class="div2">
                                 <h3 class="mb-0 ms-1">
-                                    {{roommate.name}}
+                                    {{roommate.address}}
                                 </h3>
-                                <div class="mb-2 ms-1">Total attribute ratings: {{roommate.get_total_rating}}</div>
+                                <div class="mb-3 ms-1">Total attribute ratings: {{roommate.get_total_rating}}</div>
                                 {% for r in roommate.get_top_two_ratings %}
                                 <div class="div2-maindiv">
                                     <p class="fw-bold mb-0" style="width: 150px">
@@ -141,7 +141,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             {% endfor %}
         </section>
     </div>

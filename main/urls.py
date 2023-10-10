@@ -8,4 +8,7 @@ urlpatterns = [
     path('add-roommate/', views.add_roommate, name='add_roommate'),
     path('add-address/', views.add_address, name='add_address'),
     path('roommate/<int:roommate_id>/', views.roommate, name='roommate'),
+    path('address/<int:address_id>/', views.address, name='address'),
+    path('search-roommate/', views.search_roommate, name='search_roommate'),
+    path('search-address/', views.search_address, name='search_address'),
 ]

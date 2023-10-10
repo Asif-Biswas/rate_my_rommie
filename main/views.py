@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import json
 from .models import Roommate, Address, RoommateRating, AddressRating
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 # Create your views here.
 
@@ -103,3 +104,76 @@ def roommate(request, roommate_id):
         'ratings': rating_objects,
     }
     return render(request, 'main/roommate.html', context)
+
+
+def address(request, address_id):
+    address = Address.objects.get(id=address_id)
+    ratings = AddressRating.objects.filter(address=address)
+    rating_objects = []
+    rated_by = []
+    for rating in ratings:
+        if rating.user in rated_by:
+            continue
+        rated_by.append(rating.user)
+        all_ratings = AddressRating.objects.filter(user=rating.user, address=address)
+        average = 0
+        if all_ratings:
+            total = 0
+            for rating in all_ratings:
+                total += rating.rating
+            average = total / len(all_ratings)
+        star = []
+        for i in range(1, 6):
+            if i <= average:
+                star.append('fas fa-star')
+            elif i - average < 1:
+                star.append('fas fa-star-half-alt')
+            else:
+                star.append('far fa-star')
+        rating_object = {
+            'user': rating.user,
+            'ratings': all_ratings,
+            'average': average,
+            'star': star,
+        }
+        rating_objects.append(rating_object)
+    context = {
+        'address': address,
+        'ratings': rating_objects,
+    }
+    return render(request, 'main/address.html', context)
+
+
+def search_roommate(request):
+    q = request.GET.get('q')
+    if q:
+        roommates = Roommate.objects.filter(
+            Q(name__icontains=q) |
+            Q(address__icontains=q) |
+            Q(email__icontains=q) |
+            Q(about__icontains=q) |
+            Q(social_media_link__icontains=q)
+        ).distinct()
+        context = {
+            'roommates': roommates,
+        }
+        return render(request, 'main/search_roommate.html', context)
+
+    messages.error(request, 'Please enter a search query')
+    return redirect('main:home')
+
+
+def search_address(request):
+    q = request.GET.get('q')
+    if q:
+        addresses = Address.objects.filter(
+            Q(address__icontains=q) |
+            Q(about__icontains=q)
+        ).distinct()
+        context = {
+            'addresses': addresses,
+        }
+        return render(request, 'main/search_address.html', context)
+
+    messages.error(request, 'Please enter a search query')
+    return redirect('main:home')

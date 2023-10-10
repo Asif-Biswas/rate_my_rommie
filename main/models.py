@@ -47,19 +47,14 @@ class Roommate(models.Model):
     
     def get_top_two_ratings(self):
         ratings = RoommateRating.objects.filter(roommate=self).order_by('-rating')
+        if len(ratings) < 2:
+            return ratings
         top_two = []
-        top_two_attributes = []
-        for rating in ratings:
-            if len(top_two) < 2:
-                if rating.attribute not in top_two_attributes:
-                    top_two.append(rating.attribute)
-                    top_two_attributes.append(rating)
-            else:
-                break
-        return ratings
+        top_two.append(ratings[0])
+        top_two.append(ratings[len(ratings)-1])
+        return top_two
     
     def get_total_user_rated(self):
-        # get how many unique users rated this roommate
         ratings = RoommateRating.objects.filter(roommate=self)
         users = []
         for rating in ratings:
@@ -150,17 +145,24 @@ class Address(models.Model):
     
     def get_top_two_ratings(self):
         ratings = AddressRating.objects.filter(address=self).order_by('-rating')
+        if len(ratings) < 2:
+            return ratings
         top_two = []
-        top_two_attributes = []
-        for rating in ratings:
-            if len(top_two) < 2:
-                if rating.attribute not in top_two_attributes:
-                    top_two.append(rating.attribute)
-                    top_two_attributes.append(rating)
-            else:
-                break
-        return ratings
+        top_two.append(ratings[0])
+        top_two.append(ratings[len(ratings)-1])
+        return top_two
     
+    def get_total_user_rated(self):
+        ratings = AddressRating.objects.filter(address=self)
+        users = []
+        for rating in ratings:
+            if rating.user not in users:
+                users.append(rating.user)
+        return len(users)
+    
+    def all_ratings(self):
+        ratings = AddressRating.objects.filter(address=self)
+        return ratings
 
 class AddressRating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

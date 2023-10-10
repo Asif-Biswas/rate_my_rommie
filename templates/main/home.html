@@ -9,8 +9,8 @@
             <h1 id="head-text" class="text-center header-main text-white position-relative z-5 fw-bold">Welcome to Roommate
                 Finder</h1>
 
-            <form action="">
-                <input  type="text" class="header-input" name="" id="header-input"
+            <form id="search-form" action="{% url 'main:search_roommate' %}" method="GET">
+                <input type="text" class="header-input" name="q" id="header-input"
                     placeholder="Enter Roommate name..">
             </form>
             <h4 class="text-center text-white or ">or</h4>
