@@ -7,7 +7,6 @@
 	box-shadow: 0 0 10px #ccc;
 	margin: 0 0 30px 0;
 	gap: 20px;
-	max-width: 650px;
 	margin: 30px auto;
 	transition: all 0.3s ease-in-out;
 	cursor: pointer;
@@ -53,3 +52,6 @@
 	background: rgb(228, 228, 228);
 }
 
+.rating-color > i{
+	color: rgb(230, 185, 41);
+}

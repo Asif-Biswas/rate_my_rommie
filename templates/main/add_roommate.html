@@ -9,9 +9,10 @@
 
     <h2 class="text-center my-3">Add Roommate</h2>
 
-    <div class="p-4 border rounded shadow">
+    <form class="p-4 border rounded shadow" action="{% url "main:add_roommate" %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
         <p class="mb-0 mb-1">Name:</p>
-        <input type="text" class="form-control mb-3" placeholder="Enter Name" name="name">
+        <input type="text" class="form-control mb-3" required placeholder="Enter Name" name="name">
         <p class="mb-0 mb-1">Address:</p>
         <input type="text" class="form-control mb-3" placeholder="Enter Address" name="address">
         <p class="mb-0 mb-1">Email:</p>
@@ -31,14 +32,14 @@
             <div class="attributes__container">
                 
             </div>
-            <button onclick="addNewAttribute()" type="button" class="btn btn-warning mt-3">Add New Attributes</button>
+            <button onclick="addNewAttribute()" type="button" class="btn btn-warning mt-3">Add New Attribute</button>
             <input type="hidden" name="attributes" id="attributes__input">
         </div>
 
         <div class="text-end mt-5">
             <button onclick="submitBtn()" type="button" class="btn btn-primary">Submit</button>
         </div>
-    </div>
+    </form>
 
     </div>
 
@@ -48,7 +49,7 @@
 <div class="attributes__container_copy d-none">
     <div>
         <div class="d-flex justify-content-between align-items-center mb-2 gap-3">
-            <input type="text" class="form-control " placeholder="Attribute Name">
+            <input required type="text" class="form-control " placeholder="Attribute Name">
             <div class="star-rating">
                 <input type="radio" id="5-stars" name="rating" value="5" onclick="checkThis(this)" />
                 <label for="5-stars" class="star">&#9733;</label>
@@ -63,7 +64,7 @@
             </div>
             <button onclick="deleteAttribute(this)" class="btn btn-danger"><i class="fas fa-trash"></i></button>
         </div>
-        <textarea class="form-control mb-3" placeholder="Enter Attribute Description"></textarea>
+        {% comment %} <textarea class="form-control mb-3" placeholder="Enter some text..."></textarea> {% endcomment %}
     </div>
 </div>
 
@@ -107,14 +108,14 @@
             const checkedStar = attribute.querySelector('input[type="radio"]:checked');
             let data = {
                 name: attribute.children[0].children[0].value,
-                rating: checkedStar.value,
-                description: attribute.children[1].value
+                rating: checkedStar.value
             }
             console.log(data);
             attributes.push(data);
         })
         attributes__input.value = JSON.stringify(attributes);
-        console.log(attributes__input.value);
+        
+        document.querySelector('form').submit();
     }
 
     function checkThis(e){

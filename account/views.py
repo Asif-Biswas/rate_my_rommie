@@ -13,6 +13,8 @@ from datetime import timedelta
 from django.conf import settings
 from django.template.loader import render_to_string
 import json
+from main.models import RoommateRating, AddressRating
+
 
 # Create your views here.
 
@@ -313,10 +315,24 @@ def resetPassword(request):
 @login_required(login_url='account:login')
 def profile(request):
     userProfile = UserProfile.objects.get(user=request.user)
+    roommateratings = RoommateRating.objects.filter(user=request.user)
+    addressesratings = AddressRating.objects.filter(user=request.user)
+
+    roommates = []
+    for roommaterating in roommateratings:
+        if roommaterating.roommate not in roommates:
+            roommates.append(roommaterating.roommate)
+
+    addresses = []
+    for addressrating in addressesratings:
+        if addressrating.address not in addresses:
+            addresses.append(addressrating.address)
     context = {
         'profilePage': True,
         'title': 'Profile',
         'userProfile': userProfile,
+        'roommates': roommates,
+        'addresses': addresses,
     }
     return render(request, 'account/profile.html', context)
 
@@ -327,17 +343,7 @@ def editProfile(request):
         username = request.POST.get('username')
         bio = request.POST.get('bio')
         profile_picture = request.FILES.get('profile-picture')
-        facebook_link = request.POST.get('facebook-link')
-        twitter_link = request.POST.get('twitter-link')
-        instagram_link = request.POST.get('instagram-link')
-        youtube_link = request.POST.get('youtube-link')
-        website_link = request.POST.get('website-link')
-        social_media_links = {
-            'facebook': facebook_link,
-            'twitter': twitter_link,
-            'instagram': instagram_link,
-            'youtube': youtube_link,
-        }
+        
 
         # validate username
         if User.objects.filter(username=username).exists():
@@ -384,9 +390,7 @@ def editProfile(request):
         # update user profile
         userProfile = UserProfile.objects.get(user=request.user)
         userProfile.full_name = fullname
-        userProfile.bio = bio
-        userProfile.website_link = website_link
-        userProfile.social_media_links = json.dumps(social_media_links)
+        userProfile.about_me = bio
         if profile_picture:
             userProfile.profile_picture = profile_picture
         userProfile.save()
