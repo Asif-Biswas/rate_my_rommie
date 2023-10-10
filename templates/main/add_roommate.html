@@ -4,50 +4,131 @@
 {% block body %}
 <link rel="stylesheet" href="{% static 'css/addroommate.css' %}">
 
+
 <div class="container my-5">
 
     <h2 class="text-center my-3">Add Roommate</h2>
 
     <div class="p-4 border rounded shadow">
         <p class="mb-0 mb-1">Name:</p>
-        <input type="text" class="form-control mb-3" placeholder="Enter Name">
+        <input type="text" class="form-control mb-3" placeholder="Enter Name" name="name">
+        <p class="mb-0 mb-1">Address:</p>
+        <input type="text" class="form-control mb-3" placeholder="Enter Address" name="address">
         <p class="mb-0 mb-1">Email:</p>
-        <input type="text" class="form-control mb-3" placeholder="Enter Email">
+        <input type="text" class="form-control mb-3" placeholder="Enter Email" name="email">
 
-        <label class="picture" for="picture__input" tabIndex="0">
-            <span class="picture__image"></span>
-        </label>
+        <p class="mb-0 mb-1">About:</p>
+        <textarea class="form-control mb-3" placeholder="Enter About" name="about"></textarea>
 
-        <input type="file" name="picture__input" id="picture__input">
+        <p class="mb-0 mb-1">Social Media Link:</p>
+        <input type="text" class="form-control mb-3" placeholder="Enter Social Media Link" name="social_media_link">
 
-        <div>
-
-        </div>
+        <p class="mb-0 mb-1">Picture:</p>
+        <input type="file" name="photo" id="picture__input" class="form-control mb-3">
 
         <div class="shadow p-3 ">
             <p class="mb-0 mb-1">Attributes:</p>
-            <div class="d-flex justify-content-between align-items-center mb-4 gap-3">
-                <input type="text" class="form-control " placeholder="Enter Attribute">
-                <div class="st"> 
-                    <i class="fa-regular fa-star "></i>
-                    <i class="fa-regular fa-star "></i>
-                    <i class="fa-regular fa-star "></i>
-                    <i class="fa-regular fa-star "></i>
-                    <i class="fa-regular fa-star "></i>
-                </div>
-                <button class="btn btn-danger"><i class="fas fa-trash"></i></button>
+            <div class="attributes__container">
+                
             </div>
-          
+            <button onclick="addNewAttribute()" type="button" class="btn btn-warning mt-3">Add New Attributes</button>
+            <input type="hidden" name="attributes" id="attributes__input">
         </div>
-
-        <button class="btn btn-warning mt-3">Add Attributes</button>
 
         <div class="text-end mt-5">
-            <button class="btn btn-primary">submit</button>
+            <button onclick="submitBtn()" type="button" class="btn btn-primary">Submit</button>
         </div>
+    </div>
 
     </div>
 
 </div>
+
+
+<div class="attributes__container_copy d-none">
+    <div>
+        <div class="d-flex justify-content-between align-items-center mb-2 gap-3">
+            <input type="text" class="form-control " placeholder="Attribute Name">
+            <div class="star-rating">
+                <input type="radio" id="5-stars" name="rating" value="5" onclick="checkThis(this)" />
+                <label for="5-stars" class="star">&#9733;</label>
+                <input type="radio" id="4-stars" name="rating" value="4" onclick="checkThis(this)" />
+                <label for="4-stars" class="star">&#9733;</label>
+                <input type="radio" id="3-stars" name="rating" value="3" checked onclick="checkThis(this)" />
+                <label for="3-stars" class="star">&#9733;</label>
+                <input type="radio" id="2-stars" name="rating" value="2" onclick="checkThis(this)" />
+                <label for="2-stars" class="star">&#9733;</label>
+                <input type="radio" id="1-star" name="rating" value="1" onclick="checkThis(this)" />
+                <label for="1-star" class="star">&#9733;</label>
+            </div>
+            <button onclick="deleteAttribute(this)" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+        </div>
+        <textarea class="form-control mb-3" placeholder="Enter Attribute Description"></textarea>
+    </div>
+</div>
+
+
+<script>
+    const attributes__container = document.querySelector('.attributes__container');
+    const attributes__container_copy = document.querySelector('.attributes__container_copy');
+    const attributes__input = document.querySelector('#attributes__input');
+
+    const addNewAttribute = () => {
+        const newAttribute = attributes__container_copy.cloneNode(true);
+        const newAttributeChild = newAttribute.children[0];
+        newAttributeChild.classList.add('my_attribute');
+
+        const starRating = newAttributeChild.querySelector('.star-rating');
+        const newAttributeLength = document.querySelectorAll('.my_attribute').length;
+        const allChildOfStarRating = starRating.children;
+        for(let i=0; i<allChildOfStarRating.length; i++){
+            if (allChildOfStarRating[i].tagName == 'INPUT'){
+                allChildOfStarRating[i].setAttribute('name', `rating${newAttributeLength}`);
+                allChildOfStarRating[i].setAttribute('id', `rating${newAttributeLength}${i}`);
+            } else if (allChildOfStarRating[i].tagName == 'LABEL'){
+                allChildOfStarRating[i].setAttribute('for', `rating${newAttributeLength}${i-1}`);
+            }
+        }
+
+
+        attributes__container.appendChild(newAttributeChild);
+        
+    }
+    addNewAttribute();
+
+    function deleteAttribute(e) {
+        e.parentElement.parentElement.remove();
+    }
+
+    function submitBtn(){
+        const attributes = [];
+        const attributes__container = document.querySelectorAll('.my_attribute');
+        attributes__container.forEach((attribute) => {
+            const checkedStar = attribute.querySelector('input[type="radio"]:checked');
+            let data = {
+                name: attribute.children[0].children[0].value,
+                rating: checkedStar.value,
+                description: attribute.children[1].value
+            }
+            console.log(data);
+            attributes.push(data);
+        })
+        attributes__input.value = JSON.stringify(attributes);
+        console.log(attributes__input.value);
+    }
+
+    function checkThis(e){
+        console.log(e);
+        const allChildOfStarRating = e.parentElement.children;
+        for(let i=0; i<allChildOfStarRating.length; i++){
+            if (allChildOfStarRating[i].tagName == 'INPUT'){
+                allChildOfStarRating[i].checked = false;
+            }
+        }
+        e.checked = true;
+    }
+
+</script>
+
 
 {% endblock %}
