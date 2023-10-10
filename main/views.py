@@ -28,6 +28,8 @@ def add_roommate(request):
         roommate.save()
 
         for attribute in attributes:
+            if not attribute['name']:
+                continue
             roommate_rating = RoommateRating.objects.create(
                 user=request.user,
                 roommate=roommate,
@@ -38,7 +40,8 @@ def add_roommate(request):
 
         messages.success(request, 'Roommate added successfully')
         return render(request, 'main/add_roommate.html')
-    return render(request, 'main/add_roommate.html')
+    default_attributes = RoommateRating.objects.filter(is_default=True)
+    return render(request, 'main/add_roommate.html', {'default_attributes': default_attributes})
 
 
 
@@ -55,6 +58,8 @@ def add_address(request):
         address.save()
 
         for attribute in attributes:
+            if not attribute['name']:
+                continue
             address_rating = AddressRating.objects.create(
                 user=request.user,
                 address=address,
@@ -65,7 +70,8 @@ def add_address(request):
 
         messages.success(request, 'Address added successfully')
         return render(request, 'main/add_address.html')
-    return render(request, 'main/add_address.html')
+    default_attributes = AddressRating.objects.filter(is_default=True)
+    return render(request, 'main/add_address.html', {'default_attributes': default_attributes})
 
 
 def roommate(request, roommate_id):
@@ -83,7 +89,7 @@ def roommate(request, roommate_id):
             total = 0
             for rating in all_ratings:
                 total += rating.rating
-            average = total / len(all_ratings)
+            average = float("{:.1f}".format(total / len(all_ratings)))
         star = []
         for i in range(1, 6):
             if i <= average:
@@ -99,9 +105,12 @@ def roommate(request, roommate_id):
             'star': star,
         }
         rating_objects.append(rating_object)
+    default_attributes = RoommateRating.objects.filter(is_default=True)
+    print(default_attributes)
     context = {
         'roommate': roommate,
         'ratings': rating_objects,
+        'default_attributes': default_attributes,
     }
     return render(request, 'main/roommate.html', context)
 
@@ -121,7 +130,7 @@ def address(request, address_id):
             total = 0
             for rating in all_ratings:
                 total += rating.rating
-            average = total / len(all_ratings)
+            average = float("{:.1f}".format(total / len(all_ratings)))
         star = []
         for i in range(1, 6):
             if i <= average:
@@ -137,9 +146,11 @@ def address(request, address_id):
             'star': star,
         }
         rating_objects.append(rating_object)
+    default_attributes = AddressRating.objects.filter(is_default=True)
     context = {
         'address': address,
         'ratings': rating_objects,
+        'default_attributes': default_attributes,
     }
     return render(request, 'main/address.html', context)
 
@@ -177,3 +188,61 @@ def search_address(request):
 
     messages.error(request, 'Please enter a search query')
     return redirect('main:home')
+
+
+@login_required(login_url='account:login')
+def rate_existing_roommate(request, roommate_id):
+    if request.method == 'POST':
+        roommate = Roommate.objects.get(id=roommate_id)
+        attributes = request.POST['attributes']
+        attributes = json.loads(attributes)
+
+        for attribute in attributes:
+            if not attribute['name']:
+                continue
+            roommate_rating = RoommateRating.objects.create(
+                user=request.user,
+                roommate=roommate,
+                attribute=attribute['name'],
+                rating=attribute['rating'],
+            )
+            roommate_rating.save()
+
+        messages.success(request, 'Roommate rated successfully')
+        return redirect('main:roommate', roommate_id=roommate_id)
+    return redirect('main:roommate', roommate_id=roommate_id)
+
+
+@login_required(login_url='account:login')
+def rate_existing_address(request, address_id):
+    if request.method == 'POST':
+        address = Address.objects.get(id=address_id)
+        attributes = request.POST['attributes']
+        attributes = json.loads(attributes)
+
+        for attribute in attributes:
+            if not attribute['name']:
+                continue
+            address_rating = AddressRating.objects.create(
+                user=request.user,
+                address=address,
+                attribute=attribute['name'],
+                rating=attribute['rating']
+            )
+            address_rating.save()
+
+        messages.success(request, 'Address rated successfully')
+        return redirect('main:address', address_id=address_id)
+    return redirect('main:address', address_id=address_id)
+
+
+
+
+
+
+
+
+
+
+
+

@@ -9,7 +9,7 @@
 
     <h2 class="text-center my-3">Add Address</h2>
 
-    <form class="p-4 border rounded shadow" action="{% url "main:add_address" %}" method="POST" enctype="multipart/form-data">
+    <form class="p-4 border rounded shadow attributes__container_form" action="{% url "main:add_address" %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <p class="mb-0 mb-1">Name:</p>
         <input type="text" class="form-control mb-3" required placeholder="Enter address" name="address">
@@ -23,7 +23,27 @@
         <div class="shadow p-3 ">
             <p class="mb-0 mb-1">Attributes:</p>
             <div class="attributes__container">
-                
+                {% for attribute in default_attributes %}
+                <div class="my_attribute">
+                    <div class="d-flex justify-content-between align-items-center mb-2 gap-3">
+                        <input required type="text" class="form-control " placeholder="Attribute Name" value="{{ attribute.attribute }}">
+                        <div class="star-rating">
+                            <input type="radio" id="5-stars{{ forloop.counter }}d" name="rating{{ forloop.counter }}d" value="5" onclick="checkThis(this)" />
+                            <label for="5-stars{{ forloop.counter }}d" class="star">&#9733;</label>
+                            <input type="radio" id="4-stars{{ forloop.counter }}d" name="rating{{ forloop.counter }}d" value="4" onclick="checkThis(this)" />
+                            <label for="4-stars{{ forloop.counter }}d" class="star">&#9733;</label>
+                            <input type="radio" id="3-stars{{ forloop.counter }}d" name="rating{{ forloop.counter }}d" value="3" checked onclick="checkThis(this)" />
+                            <label for="3-stars{{ forloop.counter }}d" class="star">&#9733;</label>
+                            <input type="radio" id="2-stars{{ forloop.counter }}d" name="rating{{ forloop.counter }}d" value="2" onclick="checkThis(this)" />
+                            <label for="2-stars{{ forloop.counter }}d" class="star">&#9733;</label>
+                            <input type="radio" id="1-star{{ forloop.counter }}d" name="rating{{ forloop.counter }}d" value="1" onclick="checkThis(this)" />
+                            <label for="1-star{{ forloop.counter }}d" class="star">&#9733;</label>
+                        </div>
+                        <button onclick="deleteAttribute(this)" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                    </div>
+                    {% comment %} <textarea class="form-control mb-3" placeholder="Enter some text..."></textarea> {% endcomment %}
+                </div>
+                {% endfor %}
             </div>
             <button onclick="addNewAttribute()" type="button" class="btn btn-warning mt-3">Add New Attribute</button>
             <input type="hidden" name="attributes" id="attributes__input">
@@ -108,7 +128,7 @@
         })
         attributes__input.value = JSON.stringify(attributes);
         
-        document.querySelector('form').submit();
+        document.querySelector('.attributes__container_form').submit();
     }
 
     function checkThis(e){

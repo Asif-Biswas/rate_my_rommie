@@ -36,10 +36,18 @@
                                 {% endfor %}
                             </div>
                             <div class="div2">
-                                <h3 class="mb-0 ms-1">
-                                    {{roommate.name}}
-                                </h3>
-                                <div class="mb-3 ms-1">Total attribute ratings: {{roommate.get_total_rating}}</div>
+                                <div class="d-flex">
+                                    <img src="{% if roommate.photo %}{{ roommate.photo.url }}{% else %}{% static 'images/user.png' %}{% endif %}"
+                                        alt="img"
+                                        class="rounded-circle" width="50" height="50">
+                                    <div class="ms-3">
+                                        <h3 class="mb-0 ms-1">
+                                            {{roommate.name}}
+                                        </h3>
+                                        <div class="mb-3 ms-1">Total attribute ratings: {{roommate.get_total_rating}}</div>
+                                
+                                    </div>
+                                </div>
                                 {% for r in roommate.get_top_two_ratings %}
                                 <div class="div2-maindiv">
                                     <p class="fw-bold mb-0" style="width: 150px">

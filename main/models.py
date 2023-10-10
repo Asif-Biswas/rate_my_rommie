@@ -28,7 +28,7 @@ class Roommate(models.Model):
             total = 0
             for rating in ratings:
                 total += rating.rating
-            return total / len(ratings)
+            return float("{:.1f}".format(total / len(ratings)))
         else:
             return 0
         
@@ -86,7 +86,7 @@ class RoommateRating(models.Model):
         total = 0
         for rating in ratings:
             total += rating.rating
-        return (total / (len(ratings)*5)) * 100
+        return int((total / (len(ratings)*5)) * 100)
     
     def get_star(self):
         stars = []
@@ -100,11 +100,7 @@ class RoommateRating(models.Model):
 
         return stars
     
-    def get_percentage(self):
-        return (self.rating / 5) * 100
 
-
-    
 
 class Address(models.Model):
     address = models.CharField(max_length=100)
@@ -126,7 +122,7 @@ class Address(models.Model):
             total = 0
             for rating in ratings:
                 total += rating.rating
-            return total / len(ratings)
+            return float("{:.1f}".format(total / len(ratings)))
         else:
             return 0
         
@@ -164,6 +160,7 @@ class Address(models.Model):
         ratings = AddressRating.objects.filter(address=self)
         return ratings
 
+
 class AddressRating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
@@ -182,4 +179,16 @@ class AddressRating(models.Model):
         total = 0
         for rating in ratings:
             total += rating.rating
-        return (total / (len(ratings)*5)) * 100
+        return int((total / (len(ratings)*5)) * 100)
+    
+    def get_star(self):
+        stars = []
+        for i in range(1, 6):
+            if i <= self.rating:
+                stars.append('fas fa-star')
+            elif i - self.rating < 1:
+                stars.append('fas fa-star-half-alt')
+            else:
+                stars.append('far fa-star')
+
+        return stars
