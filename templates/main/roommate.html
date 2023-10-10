@@ -1,0 +1,125 @@
+{% extends "includes/base.html" %}
+{% load static %}
+
+{% block body %}
+
+<link rel="stylesheet" href="{% static 'css/roommatedetails.css' %}">
+<link rel="stylesheet" href="{% static 'css/search.css' %}">
+<div class="container my-5">
+    <div class="row gutters-sm">
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-column align-items-center text-center py-2">
+                        <img src="{% if roommate.photo %}{{ roommate.photo.url }}{% else %}{% static 'images/user.png' %}{% endif %}"
+                            alt="img"
+                            class="rounded-circle" width="150" height="150">
+                        <div class="mt-3">
+                            <h4>
+                                {{ roommate.name }}
+                            </h4>
+                            <p class="text-secondary mb-1">Overall Score: 
+                                {{roommate.get_average_rating}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8 card mb-3">
+            <div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h6 class="mb-0">Email</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ roommate.email }}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h6 class="mb-0">Address</h6>
+                        </div>
+                        <div class="col-sm-9 mb-0 text-secondary">
+                            {{ roommate.address }}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h6 class="mb-0">About</h6>
+                        </div>
+                        <div class="col-sm-9 mb-0 text-secondary">
+                            {{ roommate.about }}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h6 class="mb-0">Total user rated:</h6>
+                        </div>
+                        <div class="col-sm-9 mb-0 text-secondary">
+                            {{ roommate.get_total_user_rated }}
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+    <h3>Ratings</h3>
+
+    {% for rating in ratings %}
+    <div>
+        <div class="search-main-div2">
+            <div class="search-main-div">
+                <div class="div1">
+                    <h2 class="p-4 div1-text fw-bold text-center">
+                        {{rating.average}}
+                    </h2>
+                    {% for s in rating.star %}
+                        <i class="{{s}}" style="color: rgb(230, 185, 41);"></i>
+                    {% endfor %}
+                </div>
+                <div class="div2">
+                    <h4 class="mb-3 ms-1">
+                        <span style="color: gray">Rated by:</span> {{rating.user.first_name}} {{rating.user.last_name}}
+                    </h4>
+                    {% for r in rating.ratings %}
+                    <div class="div2-maindiv">
+                        <p class="fw-bold mb-0" style="width: 150px">
+                            {{r.attribute}}
+                        </p>
+                        <div class="emtydiv">
+                            <p class=" mb-0 h-100
+                            {% if r.get_percentage < 30 %}
+                                bg-danger
+                            {% elif r.get_percentage < 70 %}
+                                bg-warning
+                            {% else %}
+                                bg-success
+                            {% endif %}
+                            " style="width:{{r.get_percentage}}%"></p>
+                        </div>
+                        <p class="fw-bold mb-0" style="width: 50px">
+                            {{r.get_percentage}}%
+                        </p>
+                    </div>
+                    {% endfor %}
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

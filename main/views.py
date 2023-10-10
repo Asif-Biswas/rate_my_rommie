@@ -65,3 +65,41 @@ def add_address(request):
         messages.success(request, 'Address added successfully')
         return render(request, 'main/add_address.html')
     return render(request, 'main/add_address.html')
+
+
+def roommate(request, roommate_id):
+    roommate = Roommate.objects.get(id=roommate_id)
+    ratings = RoommateRating.objects.filter(roommate=roommate)
+    rating_objects = []
+    rated_by = []
+    for rating in ratings:
+        if rating.user in rated_by:
+            continue
+        rated_by.append(rating.user)
+        all_ratings = RoommateRating.objects.filter(user=rating.user, roommate=roommate)
+        average = 0
+        if all_ratings:
+            total = 0
+            for rating in all_ratings:
+                total += rating.rating
+            average = total / len(all_ratings)
+        star = []
+        for i in range(1, 6):
+            if i <= average:
+                star.append('fas fa-star')
+            elif i - average < 1:
+                star.append('fas fa-star-half-alt')
+            else:
+                star.append('far fa-star')
+        rating_object = {
+            'user': rating.user,
+            'ratings': all_ratings,
+            'average': average,
+            'star': star,
+        }
+        rating_objects.append(rating_object)
+    context = {
+        'roommate': roommate,
+        'ratings': rating_objects,
+    }
+    return render(request, 'main/roommate.html', context)

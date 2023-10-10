@@ -57,6 +57,20 @@ class Roommate(models.Model):
             else:
                 break
         return ratings
+    
+    def get_total_user_rated(self):
+        # get how many unique users rated this roommate
+        ratings = RoommateRating.objects.filter(roommate=self)
+        users = []
+        for rating in ratings:
+            if rating.user not in users:
+                users.append(rating.user)
+        return len(users)
+    
+    def all_ratings(self):
+        ratings = RoommateRating.objects.filter(roommate=self)
+        return ratings
+
 
 
 class RoommateRating(models.Model):
@@ -78,6 +92,21 @@ class RoommateRating(models.Model):
         for rating in ratings:
             total += rating.rating
         return (total / (len(ratings)*5)) * 100
+    
+    def get_star(self):
+        stars = []
+        for i in range(1, 6):
+            if i <= self.rating:
+                stars.append('fas fa-star')
+            elif i - self.rating < 1:
+                stars.append('fas fa-star-half-alt')
+            else:
+                stars.append('far fa-star')
+
+        return stars
+    
+    def get_percentage(self):
+        return (self.rating / 5) * 100
 
 
     
