@@ -11,10 +11,10 @@
 
     <form class="p-4 border rounded shadow attributes__container_form" action="{% url "main:add_address" %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <p class="mb-0 mb-1">Name:</p>
+        <p class="mb-0 mb-1">Address:</p>
         <input type="text" class="form-control mb-3" required placeholder="Enter address" name="address">
         
-        <p class="mb-0 mb-1">About:</p>
+        <p class="mb-0 mb-1">Description:</p>
         <textarea class="form-control mb-3" placeholder="Write something about the address" name="about"></textarea>
 
         <p class="mb-0 mb-1">Picture:</p>
