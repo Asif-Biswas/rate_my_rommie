@@ -16,6 +16,11 @@ def add_roommate(request):
     if request.method == 'POST':
         name = request.POST['name']
         address = request.POST['address']
+        if Address.objects.filter(address=address).exists():
+            address = Address.objects.get(address=address)
+        else:
+            address = Address.objects.create(address=address)
+            address.save()
         email = request.POST['email']
         photo = request.FILES.get('photo')
         about = request.POST['about']
@@ -41,7 +46,8 @@ def add_roommate(request):
         messages.success(request, 'Roommate added successfully')
         return render(request, 'main/add_roommate.html')
     default_attributes = RoommateRating.objects.filter(is_default=True)
-    return render(request, 'main/add_roommate.html', {'default_attributes': default_attributes})
+    all_addresses = Address.objects.all()
+    return render(request, 'main/add_roommate.html', {'default_attributes': default_attributes, 'all_addresses': all_addresses})
 
 
 
@@ -54,7 +60,9 @@ def add_address(request):
         attributes = request.POST['attributes']
         attributes = json.loads(attributes)
 
-        address = Address.objects.create(address=address, photo=photo, about=about)
+        address = Address.objects.get_or_create(address=address)[0]
+        address.photo = photo
+        address.about = about
         address.save()
 
         for attribute in attributes:
@@ -155,6 +163,18 @@ def address(request, address_id):
     return render(request, 'main/address.html', context)
 
 
+def address_roommates(request, address_id):
+    address = Address.objects.get(id=address_id)
+    roommates = Roommate.objects.filter(address=address)
+    default_attributes = AddressRating.objects.filter(is_default=True)
+    context = {
+        'address': address,
+        'roommates': roommates,
+        'default_attributes': default_attributes,
+    }
+    return render(request, 'main/address_roommates.html', context)
+
+
 def search_roommate(request):
     q = request.GET.get('q')
     if q:
@@ -236,7 +256,20 @@ def rate_existing_address(request, address_id):
     return redirect('main:address', address_id=address_id)
 
 
+def all_roommates(request):
+    roommates = Roommate.objects.all()
+    context = {
+        'roommates': roommates,
+    }
+    return render(request, 'main/search_roommate.html', context)
 
+
+def all_addresses(request):
+    addresses = Address.objects.all()
+    context = {
+        'addresses': addresses,
+    }
+    return render(request, 'main/search_address.html', context)
 
 
 

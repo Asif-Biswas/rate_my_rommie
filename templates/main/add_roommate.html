@@ -14,7 +14,12 @@
         <p class="mb-0 mb-1">Name:</p>
         <input type="text" class="form-control mb-3" required placeholder="Enter Name" name="name">
         <p class="mb-0 mb-1">Address:</p>
-        <input type="text" class="form-control mb-3" placeholder="Enter Address" name="address">
+        <input type="text" class="form-control mb-3" placeholder="Enter Address" name="address" list="suggestion">
+        <datalist id="suggestion">
+            {% for address in addresses %}
+            <option value="{{ address.address }}">
+            {% endfor %}
+        </datalist>
         <p class="mb-0 mb-1">Email:</p>
         <input type="text" class="form-control mb-3" placeholder="Enter Email" name="email">
 

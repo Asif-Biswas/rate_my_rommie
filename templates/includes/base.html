@@ -20,6 +20,8 @@
         <a href="{% url "account:profile" %}"><i class="fas fa-user pe-2"></i> Profile</a>
         <a href="{% url "main:add_roommate" %}"><i class="fas fa-person-booth pe-2"></i> Add Roommate</a>
         <a href="{% url "main:add_address" %}"><i class="fas fa-map-marked-alt pe-2"></i> Add Address</a>
+        <a href="{% url "main:all_roommates" %}"><i class="fas fa-border-all pe-2"></i> All Roommates</a>
+        <a href="{% url "main:all_addresses" %}"><i class="fas fa-hotel pe-2"></i> All Addresses</a>
         <a href="{% url "account:logout" %}"><i class="fas fa-sign-out-alt pe-2"></i> Logout</a>
       </div>
     <div class="nav-con">
@@ -41,11 +43,11 @@
                 </form>
             </div>
             <div class="navber_link">
-                <!-- <p><a href="#home">Home</a></p>
-                <p><a href="/search.html">Search Roommates</a></p>
-                <p><a href="#add">Add Address</a></p>
-                <p><a href="#reviews">Roommate Reviews</a></p>
-                <p><a href="/login.html">Login/Signup</a></p> -->
+                <a class="d-none d-lg-block" href="{% url "main:add_roommate" %}">Add Roommate</a>
+                <a class="d-none d-lg-block" href="{% url "main:add_address" %}">Add Address</a>
+                <a class="d-none d-lg-block" href="{% url "main:all_roommates" %}">All Roommates</a>
+                <a class="d-none d-lg-block" href="{% url "main:all_addresses" %}">All Addresses</a>
+        
                 {% if user.is_authenticated %}
                 <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>
                 {% else %}

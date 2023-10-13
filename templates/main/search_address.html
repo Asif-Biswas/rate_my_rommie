@@ -14,7 +14,11 @@
 
         <section class="wrapper product" style="width: 100%; margin: 0 16px; justify-content: start">
             <h3 class="section-name" style="text-align: left; color: black; margin-bottom: 12px; margin-left: 8px">
-                <span style="color: gray;">Showing address result for:</span> {{request.GET.q}}
+                {% if request.GET.q %}
+                    <span style="color: gray;">Showing address result for:</span> {{request.GET.q}}
+                {% else %}
+                    <span style="color: gray;">Showing all addresses</span>
+                {% endif %}
             </h3>
             {% if not addresses %}
                 <div class="section-name" style="text-align: center; color: black; margin-bottom: 12px; margin-left: 8px">

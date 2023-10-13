@@ -68,9 +68,9 @@
     </div>
 
     <div class="d-flex justify-content-between">
-        <h3>Ratings</h3>
+        <h3>Roommates</h3>
         <div>
-            <a href="{% url "main:address_roommates" address.id %}" class="btn btn-success">View all Roommates</a>
+            <a href="{% url "main:address" address.id %}" class="btn btn-success">View all Ratings</a>
             <button onclick="rateThis()" class="btn btn-primary">Rate this address</button>
         </div>
     </div>
@@ -138,49 +138,65 @@
 
 
 
-    {% for rating in ratings %}
-    <div>
-        <div class="search-main-div2">
-            <div class="search-main-div">
-                <div class="div1">
-                    <h2 class="p-4 div1-text fw-bold text-center">
-                        {{rating.average}}
-                    </h2>
-                    {% for s in rating.star %}
-                        <i class="{{s}}" style="color: rgb(230, 185, 41);"></i>
-                    {% endfor %}
-                </div>
-                <div class="div2">
-                    <h4 class="mb-3 ms-1">
-                        <span style="color: gray">Rated by:</span> {{rating.user.first_name}} {{rating.user.last_name}}
-                    </h4>
-                    {% for r in rating.ratings %}
-                    <div class="div2-maindiv">
-                        <p class="fw-bold mb-0" style="width: 150px">
-                            {{r.attribute}}
-                        </p>
-                        <div class="emtydiv">
-                            <p class=" mb-0 h-100
-                            {% if r.get_percentage < 30 %}
-                                bg-danger
-                            {% elif r.get_percentage < 70 %}
-                                bg-warning
-                            {% else %}
-                                bg-success
-                            {% endif %}
-                            " style="width:{{r.get_percentage}}%"></p>
-                        </div>
-                        <p class="fw-bold mb-0" style="width: 50px">
-                            {{r.get_percentage}}%
-                        </p>
+    {% if not roommates %}
+        <h3 class="section-name my-5" style="text-align: center; color: black; margin-bottom: 12px; margin-left: 8px">
+            No roommate found
+        </h3>
+    {% endif %}
+    {% for roommate in roommates %}
+        <a href="{% url 'main:roommate' roommate.id %}" style="text-decoration: none; color: inherit">
+            <div class="search-main-div2">
+                <i class="fas fa-arrow-right"></i>
+        
+                <div class="search-main-div">
+                    <div class="div1">
+                        <h2 class="p-4 div1-text fw-bold text-center">
+                            {{roommate.get_average_rating}}
+                        </h2>
+                        {% for star in roommate.get_star %}
+                            <i class="{{star}}" style="color: rgb(230, 185, 41);"></i>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
-
-
+                    <div class="div2">
+                        <div class="d-flex">
+                            <img src="{% if roommate.photo %}{{ roommate.photo.url }}{% else %}{% static 'images/user.png' %}{% endif %}"
+                                alt="img"
+                                class="rounded-circle" width="50" height="50">
+                            <div class="ms-3">
+                                <h3 class="mb-0 ms-1">
+                                    {{roommate.name}}
+                                </h3>
+                                <div class="mb-3 ms-1">Total attribute ratings: {{roommate.get_total_rating}}</div>
+                        
+                            </div>
+                        </div>
+                        {% for r in roommate.get_top_two_ratings %}
+                        <div class="div2-maindiv">
+                            <p class="fw-bold mb-0" style="width: 150px">
+                                {{r.attribute}}
+                            </p>
+                            <div class="emtydiv">
+                                <p class=" mb-0 h-100
+                                {% if r.get_percentage < 30 %}
+                                    bg-danger
+                                {% elif r.get_percentage < 70 %}
+                                    bg-warning
+                                {% else %}
+                                    bg-success
+                                {% endif %}
+                                " style="width:{{r.get_percentage}}%"></p>
+                            </div>
+                            <p class="fw-bold mb-0" style="width: 50px">
+                                {{r.get_percentage}}%
+                            </p>
+                        </div>
+                        {% endfor %}
+    
+    
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </a>
     {% endfor %}
 </div>
 

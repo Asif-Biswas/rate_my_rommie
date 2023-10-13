@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 class Roommate(models.Model):
     name = models.CharField(max_length=100)
-    address = models.CharField(max_length=100, blank=True, null=True)
+    address = models.ForeignKey('Address', on_delete=models.SET_NULL, blank=True, null=True)
     email = models.CharField(max_length=100, blank=True, null=True)
     photo = models.ImageField(upload_to='images/', blank=True, null=True)
     about = models.TextField(blank=True, null=True)
@@ -159,6 +159,10 @@ class Address(models.Model):
     def all_ratings(self):
         ratings = AddressRating.objects.filter(address=self)
         return ratings
+
+    def get_all_roommates(self):
+        roommates = Roommate.objects.filter(address=self)
+        return roommates
 
 
 class AddressRating(models.Model):
