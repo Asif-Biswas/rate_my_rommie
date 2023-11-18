@@ -180,7 +180,7 @@ def search_roommate(request):
     if q:
         roommates = Roommate.objects.filter(
             Q(name__icontains=q) |
-            Q(address__icontains=q) |
+            Q(address__address__icontains=q) |
             Q(email__icontains=q) |
             Q(about__icontains=q) |
             Q(social_media_link__icontains=q)
